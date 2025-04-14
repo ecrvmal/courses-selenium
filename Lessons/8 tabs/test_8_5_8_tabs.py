@@ -1,3 +1,4 @@
+import math
 import re
 import time
 
@@ -6,19 +7,25 @@ from selenium.webdriver.common.by import By
 
 result = 0
 
+sites = ['http://parsinger.ru/blank/1/1.html', 'http://parsinger.ru/blank/1/2.html', 'http://parsinger.ru/blank/1/3.html',
+         'http://parsinger.ru/blank/1/4.html', 'http://parsinger.ru/blank/1/5.html', 'http://parsinger.ru/blank/1/6.html',]
+
 with webdriver.Chrome() as browser:
-    browser.get('https://parsinger.ru/blank/3/index.html')
+    for the_site in sites:
+        browser.switch_to.new_window("tab")
+        browser.get(the_site)
+        browser.find_element(By.XPATH, "//input[@type='checkbox']").click()
+        number = browser.find_element(By.XPATH, "//span[@id='result']").text
+        result += math.sqrt(int(number))
+        time.sleep(1)
 
-    buttons = browser.find_elements(By.XPATH, "//input[@type='button']")
-    for but in buttons :
-        but.click()
+    final_result = round(result, 9)
+    print(f'{final_result=}')
 
-    descriptors = browser.window_handles
-    for descr in descriptors[1:]:
-        browser.switch_to.window(descr)
-        # title_text = browser.execute_script("return document.title;")  # it works
-        title_text = browser.title    # it works
-        print(f'{title_text=}')
-        result += int(title_text)
+
+
+
+
+
     print(f'{result=}')
     

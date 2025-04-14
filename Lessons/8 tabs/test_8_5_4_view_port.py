@@ -5,19 +5,18 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 with webdriver.Chrome() as browser:
-    browser.get('https://parsinger.ru/selenium/5.8/3/index.html')
-    buttons = browser.find_elements(By.XPATH , "//span[@class='pin']")
+    browser.get('https://parsinger.ru/window_size/1/')
+    inner_width = browser.execute_script("return window.innerWidth")
+    inner_height = browser.execute_script("return window.innerHeight")
+    bro_size = browser.get_window_size()
+    print(f'{inner_width=}')
+    print(f'{inner_height=}')
+    print(f'{bro_size=}')
 
-    for el in buttons:
-        el_text = el.text
-        browser.find_element(By.XPATH, "//input[@value='Проверить']").click()
-        browser.switch_to.alert.send_keys(el_text)
-        browser.switch_to.alert.accept()
+    w_margine = bro_size['width'] - inner_width
+    h_margine = bro_size['height'] - inner_height
 
-        time.sleep(0.1)
-        pin_code = browser.find_element(By.ID, "result").text
-
-        if pin_code != 'Неверный пин-код':
-            print(f'{pin_code=}')
-            break
-
+    browser.set_window_size(555 + w_margine, 555 + h_margine)
+    time.sleep(2)
+    result = browser.find_element(By.ID, "result").text
+    print(f'{result=}')
